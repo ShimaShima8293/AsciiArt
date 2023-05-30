@@ -1,0 +1,1 @@
+pyw.exe main.py
