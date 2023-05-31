@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 from PIL import Image
+import pyperclip
 
 version = "Alpha-0.0"
 
@@ -34,20 +35,23 @@ root = tk.Tk()
 root.geometry("600x400")
 root.title("Ascii Art Generator Version " + version)
 
-rootFrame = ttk.Frame(root)
+rootFrame = tk.Frame(root, bg="#ff0000")
 
 pathVar = tk.StringVar()
 pathEntry = ttk.Entry(rootFrame, textvariable=pathVar)
-pathEntry.pack(anchor=tk.W, expand=True, side=tk.LEFT, padx=PADX, pady=PADY, fill=tk.X)
+pathEntry.pack(expand=True, side=tk.LEFT, padx=PADX, pady=PADY, fill=tk.X)
 
 browseButton = ttk.Button(rootFrame, text="Browse...", command=askPath)
-browseButton.pack(anchor=tk.E, side=tk.LEFT, padx=PADX, pady=PADY)
+browseButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
 generateButton = ttk.Button(rootFrame, text="Generate", command=generate)
 generateButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
 exitButton = ttk.Button(rootFrame, text="Exit", command=exit_)
 exitButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
+
+resultEntry = tk.Text(rootFrame)
+resultEntry.pack(expand=True, side=tk.BOTTOM, padx=PADX, pady=PADY, fill=tk.X)
 
 rootFrame.pack(fill=tk.BOTH)
 
