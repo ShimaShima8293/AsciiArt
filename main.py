@@ -4,26 +4,32 @@ from tkinter import filedialog
 from PIL import Image
 
 imagepath = ""
+PADX = 10
+PADY = 10
 
-def openImage():
-    global imagepath
-    imagepath = filedialog.askopenfile(filetypes=[("Common image files", "*.png *.jpg *.jpeg *.gif")]).name
+def askPath():
+    tmp = filedialog.askopenfile(filetypes=[("Common image files", "*.png *.jpg *.jpeg *.gif")])
+    if (tmp is None):
+        return
+    pathEntry.delete(0, tk.END)
+    pathEntry.insert(0, tmp.name)
 
 def generate():
     print(imagepath)
 
 root = tk.Tk()
+root.geometry("600x400")
 
 rootFrame = ttk.Frame(root)
 
-pathBox = ttk.Entry(rootFrame)
-pathBox.pack(anchor=tk.W, expand=True, side=tk.LEFT)
+pathEntry = ttk.Entry(rootFrame)
+pathEntry.pack(anchor=tk.W, expand=True, side=tk.LEFT, padx=PADX, pady=PADY)
 
-openButton = ttk.Button(rootFrame, text="Open image...", command=openImage)
-openButton.pack(anchor=tk.E, side=tk.LEFT)
+browseButton = ttk.Button(rootFrame, text="Browse...", command=askPath)
+browseButton.pack(anchor=tk.E, side=tk.LEFT, padx=PADX, pady=PADY)
 
 generateButton = ttk.Button(rootFrame, text="Generate", command=generate)
-generateButton.pack(side=tk.TOP)
+generateButton.pack(side=tk.TOP, padx=PADX, pady=PADY)
 
 rootFrame.pack()
 
