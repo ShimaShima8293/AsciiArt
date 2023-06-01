@@ -43,7 +43,7 @@ root = tk.Tk()
 root.geometry("600x400")
 root.title("Ascii Art Generator Version " + version)
 
-rootFrame = tk.Frame(root, bg="#ff0000")
+rootFrame = ttk.Frame(root)
 
 pathVar = tk.StringVar()
 pathEntry = ttk.Entry(rootFrame, textvariable=pathVar)
