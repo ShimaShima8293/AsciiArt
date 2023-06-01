@@ -36,6 +36,9 @@ def exit_():
     root.destroy()
     exit(0)
 
+def copy():
+    pyperclip.copy("TEST")
+
 root = tk.Tk()
 root.geometry("600x400")
 root.title("Ascii Art Generator Version " + version)
@@ -51,6 +54,9 @@ browseButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
 generateButton = ttk.Button(rootFrame, text="Generate", command=generate)
 generateButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
+
+copyButton = ttk.Button(rootFrame, text="Copy", command=copy)
+copyButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
 exitButton = ttk.Button(rootFrame, text="Exit", command=exit_)
 exitButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
