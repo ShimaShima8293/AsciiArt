@@ -10,8 +10,13 @@ version = "Alpha-0.0"
 PADX = 10
 PADY = 10
 
+fileTypes = [
+    ("Common image files", "*.png *.jpg *.jpeg *.gif *.bmp *.tiff *.tif *.ico *.webp"),
+    ("All files", "*.*")
+]
+
 def askPath():
-    tmp = filedialog.askopenfile(filetypes=[("Common image files", "*.png *.jpg *.jpeg *.gif")])
+    tmp = filedialog.askopenfile(filetypes=fileTypes)
     if (tmp is None):
         return
     pathEntry.delete(0, tk.END)
