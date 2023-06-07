@@ -4,6 +4,8 @@ from tkinter import filedialog
 from tkinter import messagebox
 from PIL import Image
 import pyperclip
+import threading
+import math
 
 version = "Alpha-0.0"
 
@@ -15,6 +17,19 @@ fileTypes = [
     ("All files", "*.*")
 ]
 
+chars = [
+    " ",
+    ".",
+    ":",
+    ";",
+    "*",
+    "!",
+    "?",
+    "#",
+    "&",
+    "@",
+]
+
 def askPath():
     tmp = filedialog.askopenfile(filetypes=fileTypes)
     if (tmp is None):
@@ -23,21 +38,38 @@ def askPath():
     pathEntry.insert(0, tmp.name)
 
 def generate():
+    global result
     print("Generating for: " + pathVar.get())
     try:
-        Image.open(pathVar.get())
+        image = Image.open(pathVar.get())
     except AttributeError:
         messagebox.showerror("Error", "Please enter an image path")
+        return
     except FileNotFoundError:
         messagebox.showerror("Error", "File not found: " + pathVar.get())
-
+        return
+    image = image.resize((int(image.width / 5), int(image.height / 5)))
+    # image = image.rotate(90)
+    result = ""
+    for i in range(image.width):
+        for j in range(image.height):
+            pixel = image.getpixel((i, j))
+            # print(pixel)
+            charIndex = round(image.getpixel((i, j))[3] / 255.0 * (len(chars) - 1))
+            # print(charIndex)
+            result += chars[charIndex]
+        result += "\n"
+    print(result)
+    resultEntry.delete("1.0", "end")
+    resultEntry.insert("1.0", result)
+    
 
 def exit_():
     root.destroy()
     exit(0)
 
 def copy():
-    pyperclip.copy("TEST")
+    pyperclip.copy(result)
 
 root = tk.Tk()
 root.geometry("600x400")
@@ -63,6 +95,7 @@ exitButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
 resultEntry = tk.Text(rootFrame)
 resultEntry.pack(expand=True, side=tk.BOTTOM, padx=PADX, pady=PADY, fill=tk.X)
+resultEntry.configure(font=("MS Gothic", 4, "normal"))
 
 rootFrame.pack(fill=tk.BOTH)
 
