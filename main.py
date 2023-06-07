@@ -55,7 +55,6 @@ def askPath(event=None):
 
 def generate(event=None):
     global result
-    print("Generating for: " + pathVar.get())
     try:
         image = Image.open(pathVar.get())
     except AttributeError:
@@ -77,7 +76,6 @@ def generate(event=None):
             charIndex = round(pixel[3] / 255.0 * (len(charUsing) - 1))
             result += charUsing[charIndex]
         result += "\n"
-    print(result)
     resultEntry.delete("1.0", "end")
     resultEntry.insert("1.0", result)
     
@@ -104,14 +102,18 @@ def zoomOut(event=None):
 
 def zoomReset(event=None):
     global zoom
-    zoom = 4
+    zoom = 7
     resultEntry.configure(font=("MS Gothic", zoom, "normal"))
 
 root = tk.Tk()
 root.geometry("1920x1080")
+root.minsize(1000, 200)
 root.title("Ascii Art Generator")
 
 buttonFrame = ttk.Frame(root)
+
+pathCaption = ttk.Label(buttonFrame, text="File path: ")
+pathCaption.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
 pathVar = tk.StringVar()
 pathEntry = ttk.Entry(buttonFrame, textvariable=pathVar)
@@ -121,7 +123,7 @@ browseButton = ttk.Button(buttonFrame, text="Browse...", command=askPath)
 browseButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
 charOptionVar = tk.StringVar(root)
-# charOptionVar.set(charOptions[0])
+charOptionVar.set(charOptions[0])
 charOption = ttk.OptionMenu(buttonFrame, charOptionVar, charOptions[0], *charOptions)
 charOption.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
@@ -166,6 +168,9 @@ viewMenu.add_command(label="Zoom In", command=zoomIn, accelerator="Ctrl+=")
 viewMenu.add_command(label="Zoom Out", command=zoomOut, accelerator="Ctrl+-")
 viewMenu.add_command(label="Reset Zoom", command=zoomReset, accelerator="Ctrl+0")
 menu.add_cascade(label="View", menu=viewMenu)
+
+pathVar.set("./ascii_logo.png")
+generate()
 
 root.configure(menu=menu)
 root.mainloop()

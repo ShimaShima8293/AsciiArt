@@ -1,1 +1,2 @@
-pyw.exe main.py
+@echo off
+start pyw.exe main.py
