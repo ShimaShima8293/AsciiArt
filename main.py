@@ -30,6 +30,22 @@ chars = [
     "@",
 ]
 
+wchars = [
+    "　",
+    "・",
+    "。",
+    "：",
+    "；",
+    "＊",
+    "！",
+    "？",
+    "＃",
+    "＆",
+    "＠"
+]
+
+charOptions = ["Full-width", "Half-width"]
+
 def askPath():
     tmp = filedialog.askopenfile(filetypes=fileTypes)
     if (tmp is None):
@@ -37,7 +53,7 @@ def askPath():
     pathEntry.delete(0, tk.END)
     pathEntry.insert(0, tmp.name)
 
-def generate():
+def generate(event=None):
     global result
     print("Generating for: " + pathVar.get())
     try:
@@ -49,15 +65,17 @@ def generate():
         messagebox.showerror("Error", "File not found: " + pathVar.get())
         return
     image = image.resize((int(image.width / 5), int(image.height / 5)))
-    # image = image.rotate(90)
     result = ""
-    for i in range(image.width):
-        for j in range(image.height):
-            pixel = image.getpixel((i, j))
-            # print(pixel)
-            charIndex = round(image.getpixel((i, j))[3] / 255.0 * (len(chars) - 1))
-            # print(charIndex)
-            result += chars[charIndex]
+    if (charOptionVar.get() == charOptions[0]):
+        charUsing = wchars
+    else:
+        charUsing = chars
+
+    for i in range(image.height):
+        for j in range(image.width):
+            pixel = image.getpixel((j, i))
+            charIndex = round(pixel[3] / 255.0 * (len(charUsing) - 1))
+            result += charUsing[charIndex]
         result += "\n"
     print(result)
     resultEntry.delete("1.0", "end")
@@ -71,32 +89,65 @@ def exit_():
 def copy():
     pyperclip.copy(result)
 
-root = tk.Tk()
-root.geometry("600x400")
-root.title("Ascii Art Generator Version " + version)
+def zoomIn(event=None):
+    global zoom
+    zoom += 1
+    resultEntry.configure(font=("MS Gothic", zoom, "normal"))
 
-rootFrame = ttk.Frame(root)
+def zoomOut(event=None):
+    global zoom
+    zoom -= 1
+    if (zoom < 1):
+        zoom = 1
+        return
+    resultEntry.configure(font=("MS Gothic", zoom, "normal"))
+
+def zoomReset(event=None):
+    global zoom
+    zoom = 4
+    resultEntry.configure(font=("MS Gothic", zoom, "normal"))
+
+root = tk.Tk()
+root.geometry("1920x1080")
+root.title("Ascii Art Generator")
+
+buttonFrame = ttk.Frame(root)
 
 pathVar = tk.StringVar()
-pathEntry = ttk.Entry(rootFrame, textvariable=pathVar)
+pathEntry = ttk.Entry(buttonFrame, textvariable=pathVar)
 pathEntry.pack(expand=True, side=tk.LEFT, padx=PADX, pady=PADY, fill=tk.X)
 
-browseButton = ttk.Button(rootFrame, text="Browse...", command=askPath)
+browseButton = ttk.Button(buttonFrame, text="Browse...", command=askPath)
 browseButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
-generateButton = ttk.Button(rootFrame, text="Generate", command=generate)
+charOptionVar = tk.StringVar(root)
+charOptionVar.set(charOptions[0])
+charOption = ttk.OptionMenu(buttonFrame, charOptionVar, *charOptions)
+charOption.pack(side=tk.LEFT, padx=PADX, pady=PADY)
+
+generateButton = ttk.Button(buttonFrame, text="Generate", command=generate)
 generateButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
-copyButton = ttk.Button(rootFrame, text="Copy", command=copy)
+copyButton = ttk.Button(buttonFrame, text="Copy", command=copy)
 copyButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
-exitButton = ttk.Button(rootFrame, text="Exit", command=exit_)
+exitButton = ttk.Button(buttonFrame, text="Exit", command=exit_)
 exitButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
-resultEntry = tk.Text(rootFrame)
-resultEntry.pack(expand=True, side=tk.BOTTOM, padx=PADX, pady=PADY, fill=tk.X)
-resultEntry.configure(font=("MS Gothic", 4, "normal"))
+buttonFrame.pack(fill=tk.BOTH)
 
-rootFrame.pack(fill=tk.BOTH)
+resultFrame = ttk.Frame(root)
+
+resultEntry = tk.Text(resultFrame)
+resultEntry.pack(expand=True, side=tk.BOTTOM, padx=PADX, pady=PADY, fill=tk.BOTH)
+zoomReset()
+
+root.bind("<Control-=>", zoomIn)
+root.bind("<Control-minus>", zoomOut)
+root.bind("<Control-0>", zoomReset)
+root.bind("<Return>", generate)
+
+
+resultFrame.pack(fill=tk.BOTH, expand=True)
 
 root.mainloop()
