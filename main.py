@@ -152,6 +152,20 @@ root.bind("<Control-c>", copy)
 
 resultFrame.pack(fill=tk.BOTH, expand=True)
 
+menu = tk.Menu(root)
 
+fileMenu = tk.Menu(menu, tearoff=0)
+fileMenu.add_command(label="Open...", command=askPath, accelerator="Ctrl+O")
+fileMenu.add_command(label="Generate", command=generate, accelerator="Ctrl+R")
+fileMenu.add_separator()
+fileMenu.add_command(label="Exit", command=askPath, accelerator="Alt+F4")
+menu.add_cascade(label="File", menu=fileMenu)
 
+viewMenu = tk.Menu(menu, tearoff=0)
+viewMenu.add_command(label="Zoom In", command=zoomIn, accelerator="Ctrl+=")
+viewMenu.add_command(label="Zoom Out", command=zoomOut, accelerator="Ctrl+-")
+viewMenu.add_command(label="Reset Zoom", command=zoomReset, accelerator="Ctrl+0")
+menu.add_cascade(label="View", menu=viewMenu)
+
+root.configure(menu=menu)
 root.mainloop()
