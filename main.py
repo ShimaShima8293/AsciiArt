@@ -46,7 +46,7 @@ wchars = [
 
 charOptions = ["Full-width", "Half-width"]
 
-def askPath():
+def askPath(event=None):
     tmp = filedialog.askopenfile(filetypes=fileTypes)
     if (tmp is None):
         return
@@ -121,8 +121,8 @@ browseButton = ttk.Button(buttonFrame, text="Browse...", command=askPath)
 browseButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
 charOptionVar = tk.StringVar(root)
-charOptionVar.set(charOptions[0])
-charOption = ttk.OptionMenu(buttonFrame, charOptionVar, *charOptions)
+# charOptionVar.set(charOptions[0])
+charOption = ttk.OptionMenu(buttonFrame, charOptionVar, charOptions[0], *charOptions)
 charOption.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
 generateButton = ttk.Button(buttonFrame, text="Generate", command=generate)
@@ -145,9 +145,13 @@ zoomReset()
 root.bind("<Control-=>", zoomIn)
 root.bind("<Control-minus>", zoomOut)
 root.bind("<Control-0>", zoomReset)
-root.bind("<Return>", generate)
+root.bind("<Control-r>", generate)
+root.bind("<Control-o>", askPath)
+root.bind("<Control-c>", copy)
 
 
 resultFrame.pack(fill=tk.BOTH, expand=True)
+
+
 
 root.mainloop()
