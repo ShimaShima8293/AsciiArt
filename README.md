@@ -1,7 +1,5 @@
 # Ascii Art Generator
-
-## How to Use
-You can open `launch.bat` to launch the application.
+透過画像(png等)からアスキーアート(AA)を生成します。
 
 ## Dependencies
 - [Tkinter](https://docs.python.org/3/library/tkinter.html)
