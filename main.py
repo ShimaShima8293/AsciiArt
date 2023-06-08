@@ -17,6 +17,10 @@ fileTypes = [
     ("All files", "*.*")
 ]
 
+fileTypesSaving = [
+    ("Plain text", "*.txt"),
+    ("All files", "*.*")
+]
 chars = [
     " ",
     ".",
@@ -105,6 +109,17 @@ def zoomReset(event=None):
     zoom = 7
     resultEntry.configure(font=("MS Gothic", zoom, "normal"))
 
+def save(event=None):
+    path = filedialog.asksaveasfilename(filetypes=fileTypesSaving)
+    if (path == ""):
+        return
+    if not path.endswith(".txt"):
+        path += ".txt"
+        print("added extension")
+    print(path)
+    with open(path, "w", encoding="utf-8") as file:
+        file.write(result)
+
 root = tk.Tk()
 root.geometry("1920x1080")
 root.minsize(1000, 200)
@@ -133,6 +148,9 @@ generateButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 copyButton = ttk.Button(buttonFrame, text="Copy", command=copy)
 copyButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
+saveButton = ttk.Button(buttonFrame, text="Save...", command=save)
+saveButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
+
 exitButton = ttk.Button(buttonFrame, text="Exit", command=exit_)
 exitButton.pack(side=tk.LEFT, padx=PADX, pady=PADY)
 
@@ -140,9 +158,17 @@ buttonFrame.pack(fill=tk.BOTH)
 
 resultFrame = ttk.Frame(root)
 
-resultEntry = tk.Text(resultFrame)
+resultEntry = tk.Text(resultFrame, wrap="none")
 resultEntry.pack(expand=True, side=tk.BOTTOM, padx=PADX, pady=PADY, fill=tk.BOTH)
 zoomReset()
+
+scrollY = ttk.Scrollbar(resultEntry, orient=tk.VERTICAL, command=resultEntry.yview)
+resultEntry["yscrollcommand"] = scrollY.set
+scrollY.pack(side=tk.RIGHT, fill=tk.Y, expand=False)
+
+scrollX = ttk.Scrollbar(resultEntry, orient=tk.HORIZONTAL, command=resultEntry.xview)
+resultEntry["xscrollcommand"] = scrollX.set
+scrollX.pack(side=tk.BOTTOM, fill=tk.X, expand=False)
 
 root.bind("<Control-=>", zoomIn)
 root.bind("<Control-minus>", zoomOut)
@@ -150,6 +176,7 @@ root.bind("<Control-0>", zoomReset)
 root.bind("<Control-r>", generate)
 root.bind("<Control-o>", askPath)
 root.bind("<Control-c>", copy)
+root.bind("<Control-s>", save)
 
 
 resultFrame.pack(fill=tk.BOTH, expand=True)
@@ -159,6 +186,7 @@ menu = tk.Menu(root)
 fileMenu = tk.Menu(menu, tearoff=0)
 fileMenu.add_command(label="Open...", command=askPath, accelerator="Ctrl+O")
 fileMenu.add_command(label="Generate", command=generate, accelerator="Ctrl+R")
+fileMenu.add_command(label="Save...", command=generate, accelerator="Ctrl+S")
 fileMenu.add_separator()
 fileMenu.add_command(label="Exit", command=askPath, accelerator="Alt+F4")
 menu.add_cascade(label="File", menu=fileMenu)
