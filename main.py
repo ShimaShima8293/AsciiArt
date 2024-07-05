@@ -4,8 +4,11 @@ from tkinter import filedialog
 from tkinter import messagebox
 from PIL import Image
 import pyperclip
-import threading
-import math
+import glob
+import json
+import os
+
+os.chdir(os.path.abspath(os.path.dirname(__file__)))
 
 version = "Alpha-0.0"
 
